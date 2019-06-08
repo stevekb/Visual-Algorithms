@@ -59,7 +59,9 @@ while running:
 
     for event in pygame.event.get():
         if pygame.mouse.get_pressed()[0]:
+
             VNN.nn.randomize()
+            
         if event.type == pygame.QUIT:
             running = False
 
