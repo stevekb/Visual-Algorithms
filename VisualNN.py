@@ -6,6 +6,8 @@ import pygame.gfxdraw
 # the following will visualize a nn that has been thrown in
 # note this will accept a custom NN object which contains data about itself
 # this class will draw and position it when asked by the main class
+# so you can have a NN with the weights not known but here we can
+# set a value to each node so we can see it's contents :)
 
 
 class VisualNN:

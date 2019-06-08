@@ -6,12 +6,18 @@ import pygame.gfxdraw
 #this class is just a wrapper
 #where I can run different things
 
+# for our sample data set just use random numbers
+#and then sin
+
+#trainingX = np.array()
+
+
 vg = VisualGUI()
 pygame.init()
 screen = pygame.display.set_mode((800, 800))
 time = 0.0
 
-myNN = NN(5, (3, 3), 3)
+myNN = NN(1, (3, 3), 1)
 # print(myNN.getinputw())
 myNN.randomize()
 print(myNN.getoutputw())
@@ -52,6 +58,8 @@ while running:
     pygame.display.update()
 
     for event in pygame.event.get():
+        if pygame.mouse.get_pressed()[0]:
+            VNN.nn.randomize()
         if event.type == pygame.QUIT:
             running = False
 
