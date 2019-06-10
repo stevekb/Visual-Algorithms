@@ -18,7 +18,8 @@ class VisualNN:
         self.posx = 50
         self.posy = 50
         self.height = 700
-        self.width = 700
+        self.width = 200
+        self.nodeRadius = 5
         self.inputHeight = nn.getinputw().shape[0]
         self.hiddenHeight = nn.gethiddenw().shape[0]
         self.hiddenWidth = nn.gethiddenw().shape[2]
@@ -82,21 +83,21 @@ class VisualNN:
             pygame.gfxdraw.filled_circle(self.screen,
                                          int(self.posx + self.nodePosX[0] * self.width),
                                          int(self.posy + self.nodeInputPosY[j] * self.height),
-                                         16, [255, 255, 255])
+                                         self.nodeRadius, [255, 255, 255])
             pygame.gfxdraw.aacircle(self.screen,
                                     int(self.posx + self.nodePosX[0] * self.width),
                                     int(self.posy + self.nodeInputPosY[j] * self.height),
-                                    16, [255, 255, 255])
+                                    self.nodeRadius, [255, 255, 255])
 
         for j in range(self.outputHeight):
             pygame.gfxdraw.filled_circle(self.screen,
                                          int(self.posx + self.nodePosX[-1] * self.width),
                                          int(self.posy + self.nodeOutputPosY[j] * self.height),
-                                         16, [255, 255, 255])
+                                         self.nodeRadius, [255, 255, 255])
             pygame.gfxdraw.aacircle(self.screen,
                                     int(self.posx + self.nodePosX[-1] * self.width),
                                     int(self.posy + self.nodeOutputPosY[j] * self.height),
-                                    16,
+                                    self.nodeRadius,
                                     [255, 255, 255])
 
         for i in range(self.hiddenWidth):
@@ -104,14 +105,38 @@ class VisualNN:
                 pygame.gfxdraw.filled_circle(self.screen,
                                              int(self.posx + self.nodePosX[i + 1] * self.width),
                                              int(self.posy + self.nodeHiddenPosY[j] * self.height),
-                                             16, [255, 255, 255])
+                                             self.nodeRadius, [255, 255, 255])
                 pygame.gfxdraw.aacircle(self.screen,
                                         int(self.posx + self.nodePosX[i + 1] * self.width),
                                         int(self.posy + self.nodeHiddenPosY[j] * self.height),
-                                        16, [255, 255, 255])
-
+                                        self.nodeRadius, [255, 255, 255])
 
     # this takes in a weight and translate it from -1 to 1 to 0-255
     def weighttocolor(self, value):
         a = int((value + 1.0)/2.0 * 255.0)
         return [255 - a, a, 0]
+
+    # mouse click location is thrown here
+    # what happens is this sees if the vn will do anything
+    # in this case we'll turn input nodes on and off
+    def clicked(self, x, y):
+        print("click: X: "+ str(x) + " Y: " + str(y))
+
+        Xsector = -1
+        Ysector = -1
+        #check what node is clicked hard way
+        if 0 <= x - self.posx <= self.width:
+            Xsector = int((x - self.posx) / self.width * (self.hiddenWidth + 2))
+
+        print("XSector: " + str(Xsector))
+        #we know where it is in the grid based on Xsector
+        #so for 0 we check inputheight to find other section
+        #between 1 etc and width-1 we check hidden
+        #and the last one we check output
+        #but for now we only care about input height
+        if Xsector == 0:
+            if 0 <= y - self.posy <= self.height:
+                Ysector = int((y - self.posy) / self.height * self.inputHeight)
+        print("Ysector: " + str(Ysector))
+
+

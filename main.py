@@ -17,7 +17,7 @@ pygame.init()
 screen = pygame.display.set_mode((800, 800))
 time = 0.0
 
-myNN = NN(1, (3, 3), 1)
+myNN = NN(22, (10, 2), 4)
 # print(myNN.getinputw())
 myNN.randomize()
 print(myNN.getoutputw())
@@ -61,7 +61,8 @@ while running:
         if pygame.mouse.get_pressed()[0]:
 
             VNN.nn.randomize()
-            
+            VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+
         if event.type == pygame.QUIT:
             running = False
 
