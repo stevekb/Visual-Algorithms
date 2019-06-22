@@ -15,10 +15,10 @@ class VisualNN:
     def __init__(self, screen, nn):
         self.screen = screen
         self.nn = nn
-        self.posx = 50
-        self.posy = 50
-        self.height = 700
-        self.width = 200
+        self.posx = 00
+        self.posy = 00
+        self.height = 800
+        self.width = 800
         self.nodeRadius = 5
         self.inputHeight = nn.getinputw().shape[0]
         self.hiddenHeight = nn.gethiddenw().shape[0]

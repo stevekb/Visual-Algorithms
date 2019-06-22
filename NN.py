@@ -8,6 +8,8 @@ class NN:
         self.inputweights = 2 * np.random.random((inputs, hidden[0])) - 1
         self.hiddenweights = 2 * np.random.random((hidden[0], hidden[0], hidden[1])) - 1
         self.outputweights = 2 * np.random.random((hidden[0], outputs)) - 1
+        self.hiddenbias = 2 * np.random.random((hidden[0], hidden[1])) - 1
+        self.outputbi
 
     def getinputw(self):
         return self.inputweights
