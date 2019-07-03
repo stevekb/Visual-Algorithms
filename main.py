@@ -1,6 +1,6 @@
 from VisualGUI import VisualGUI
 from VisualNN import VisualNN
-from NN import NN
+from neuralnet import NeuralNet
 import pygame
 import pygame.gfxdraw
 #this class is just a wrapper
@@ -11,23 +11,30 @@ import pygame.gfxdraw
 
 #trainingX = np.array()
 
+z = (4,2,3)
+shapes = list(zip(z[1:], z[:-1]))
+w_shapes = [(a, b) for a, b in zip(z[1:], z[:-1])]
+print(shapes)
+print(w_shapes)
 
 vg = VisualGUI()
 pygame.init()
 screen = pygame.display.set_mode((800, 800))
 time = 0.0
 
-myNN = NN(22, (10, 2), 4)
-# print(myNN.getinputw())
-myNN.randomize()
-print(myNN.getoutputw())
-VNN = VisualNN(screen, myNN)
+myNN = NeuralNet((2, 10, 10, 4))
+# print(myNN.getweights())
+print("test")
+print(myNN.predict([3, 1]))
+# myNN.randomize()
+# print(myNN.getoutputw())
+# VNN = VisualNN(screen, myNN)
 
 # basic loop
 running = True
 while running:
     screen.fill((0, 0, 0))
-    VNN.draw()
+    # VNN.draw()
     #update array info
 
     # array = vg.get_array()
@@ -59,9 +66,9 @@ while running:
 
     for event in pygame.event.get():
         if pygame.mouse.get_pressed()[0]:
-
-            VNN.nn.randomize()
-            VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            a = 0
+            # VNN.nn.randomize()
+            # VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
         if event.type == pygame.QUIT:
             running = False

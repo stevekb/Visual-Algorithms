@@ -1,5 +1,5 @@
 import numpy as np
-from NN import NN
+from neuralnet import NeuralNet
 import pygame
 import pygame.gfxdraw
 
