@@ -11,7 +11,7 @@ import pygame.gfxdraw
 
 #trainingX = np.array()
 
-z = (4,2,3)
+z = (4,2,2,3)
 shapes = list(zip(z[1:], z[:-1]))
 w_shapes = [(a, b) for a, b in zip(z[1:], z[:-1])]
 print(shapes)
@@ -22,19 +22,19 @@ pygame.init()
 screen = pygame.display.set_mode((800, 800))
 time = 0.0
 
-myNN = NeuralNet((2, 10, 10, 4))
+myNN = NeuralNet((2, 3 ,4 ,5 ,6 ,7 ,8 ,9, 10, 9, 8 ,7 ,6 ,5 , 4 ,3 ,2))
 # print(myNN.getweights())
 print("test")
 print(myNN.predict([3, 1]))
 # myNN.randomize()
 # print(myNN.getoutputw())
-# VNN = VisualNN(screen, myNN)
+VNN = VisualNN(screen, myNN)
 
 # basic loop
 running = True
 while running:
     screen.fill((0, 0, 0))
-    # VNN.draw()
+    VNN.draw()
     #update array info
 
     # array = vg.get_array()

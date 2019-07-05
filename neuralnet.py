@@ -13,6 +13,9 @@ class NeuralNet:
     def getweights(self):
         return self.weights
 
+    def getshape(self):
+        return self.shape
+
     def getbias(self):
         return self.bias
 
