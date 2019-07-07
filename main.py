@@ -1,6 +1,9 @@
 from VisualGUI import VisualGUI
 from VisualNN import VisualNN
 from neuralnet import NeuralNet
+from SnakeGame import SnakeGame
+from VisualSnakeGame import VisualSnakeGame
+from SnakeGame import Direction
 import pygame
 import pygame.gfxdraw
 #this class is just a wrapper
@@ -19,45 +22,34 @@ print(w_shapes)
 
 vg = VisualGUI()
 pygame.init()
-screen = pygame.display.set_mode((800, 800))
+screen = pygame.display.set_mode((1200, 800))
 time = 0.0
 
-myNN = NeuralNet((2, 3 ,4 ,5 ,6 ,7 ,8 ,9, 10, 9, 8 ,7 ,6 ,5 , 4 ,3 ,2))
+
+myNN = NeuralNet((70, 5, 5, 5, 4))
 # print(myNN.getweights())
-print("test")
-print(myNN.predict([3, 1]))
+print(myNN.predict([0]*70))
+
+mySG = SnakeGame(8)
+myVSG = VisualSnakeGame(screen, mySG)
+myVSG.setheight(500)
+myVSG.setposition(650, 150)
+myVSG.setwidth(500)
+
 # myNN.randomize()
 # print(myNN.getoutputw())
 VNN = VisualNN(screen, myNN)
-
+VNN.setheight(700)
+VNN.setposition(50, 50)
+VNN.setwidth(500)
 # basic loop
 running = True
 while running:
     screen.fill((0, 0, 0))
     VNN.draw()
-    #update array info
-
-    # array = vg.get_array()
-    #
-    # posx = 100.0
-    # posy = 100.0
-    # width = 600.0
-    # height = 600.0
-    # length = len(array)
-    # for i in range(length):
-    #     if array[i] == 0:
-    #         continue
-    #     pygame.draw.rect(screen,
-    #                      [255, 255, 255],
-    #                      (int(posx + i * width / length),
-    #                       int(posy + height - int(array[i] * height / 32.0)),
-    #                       int(width / length),
-    #                       int(array[i] * height / 32.0)),
-    #                      0)
-
-    #pygame.gfxdraw.aacircle(screen,[255,255,255],[16,int(16+time)],16,0)
-    # pygame.gfxdraw.filled_circle(screen, 16, int(16+time), 16, [255, 255, 255])
-    # pygame.gfxdraw.aacircle(screen, 16, int(16+time), 16, [255, 255, 255])
+    myVSG.draw()
+    state = myVSG.snakegame.getstate()
+    #myNN.predict(state.T)
 
 
     time += 0.1
@@ -66,9 +58,24 @@ while running:
 
     for event in pygame.event.get():
         if pygame.mouse.get_pressed()[0]:
-            a = 0
-            # VNN.nn.randomize()
-            # VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+
+        if pygame.key.get_pressed()[pygame.K_SPACE]:
+            print(myVSG.snakegame.predict(myNN.predict(state.T)))
+            myVSG.snakegame.update(myVSG.snakegame.predict(myNN.predict(state.T)))
+
+        if pygame.key.get_pressed()[pygame.K_LEFT]:
+            print("Human: LEFT, AI: " + str(myVSG.snakegame.predict(myNN.predict(state.T))))
+            myVSG.snakegame.update(Direction.LEFT)
+        if pygame.key.get_pressed()[pygame.K_RIGHT]:
+            print("Human: RIGHT, AI: " + str(myVSG.snakegame.predict(myNN.predict(state.T))))
+            myVSG.snakegame.update(Direction.RIGHT)
+        if pygame.key.get_pressed()[pygame.K_UP]:
+            print("Human: UP, AI: " + str(myVSG.snakegame.predict(myNN.predict(state.T))))
+            myVSG.snakegame.update(Direction.UP)
+        if pygame.key.get_pressed()[pygame.K_DOWN]:
+            print("Human: DOWN, AI: " + str(myVSG.snakegame.predict(myNN.predict(state.T))))
+            myVSG.snakegame.update(Direction.DOWN)
 
         if event.type == pygame.QUIT:
             running = False

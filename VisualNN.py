@@ -59,14 +59,14 @@ class VisualNN:
 
     # this takes in a weight and translate it from -1 to 1 to 0-255 and uses clips for larger values
     def weighttocolor(self, value):
-        a = np.clip(int((value + 1)/2 * 255.0), 0, 255)
+        a = np.clip(int((value + 1)/2 * 255.0/2 + 255/4), 0, 255)
         return [255 - a, a, 0]
 
     # mouse click location is thrown here
     # what happens is this sees if the vn will do anything
     # in this case we'll turn input nodes on and off
     def clicked(self, x, y):
-        print("click: X: "+ str(x) + " Y: " + str(y))
+        # print("click: X: "+ str(x) + " Y: " + str(y))
 
         Xsector = -1
         Ysector = -1
@@ -80,9 +80,19 @@ class VisualNN:
         #between 1 etc and width-1 we check hidden
         #and the last one we check output
         #but for now we only care about input height
-        if Xsector == 0:
-            if 0 <= y - self.posy <= self.height:
-                Ysector = int((y - self.posy) / self.height * self.node_heights[0])
+        if 0 <= y - self.posy <= self.height:
+            Ysector = int((y - self.posy) / self.height * self.node_heights[Xsector])
         print("Ysector: " + str(Ysector))
+
+
+    def setposition(self, x, y):
+        self.posx = x
+        self.posy = y
+
+    def setwidth(self, w):
+        self.width = w
+
+    def setheight(self, h):
+        self.height = h
 
 
