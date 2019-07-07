@@ -44,6 +44,7 @@ VNN.setposition(50, 50)
 VNN.setwidth(500)
 # basic loop
 running = True
+bestscore = 0
 while running:
     screen.fill((0, 0, 0))
     VNN.draw()
@@ -61,8 +62,12 @@ while running:
             VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
         if pygame.key.get_pressed()[pygame.K_SPACE]:
-            print(myVSG.snakegame.predict(myNN.predict(state.T)))
-            myVSG.snakegame.update(myVSG.snakegame.predict(myNN.predict(state.T)))
+            myVSG.snakegame.reset()
+            VNN.nn.randomize()
+            score = myVSG.snakegame.getscore(VNN.nn)
+            if score > bestscore:
+                bestscore = score
+            print("score: " + str(score) + " bestscore: " + str(bestscore))
 
         if pygame.key.get_pressed()[pygame.K_LEFT]:
             print("Human: LEFT, AI: " + str(myVSG.snakegame.predict(myNN.predict(state.T))))

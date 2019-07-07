@@ -11,6 +11,7 @@ class SnakeGame:
     #initiate apple position var
     #initiate snake direction var
     def __init__(self, size):
+        self.size = size
         self.grid = np.zeros((size, size))
         self.snakeposX = 2
         self.snakeposY = 0
@@ -23,6 +24,20 @@ class SnakeGame:
         self.finished = False
         for i in range(self.snakelength):
             self.grid[i][0] = i+1
+
+    def reset(self):
+        self.grid = np.zeros((self.size, self.size))
+        self.snakeposX = 2
+        self.snakeposY = 0
+        self.snakelength = 3
+        self.appleposX = 2
+        self.appleposY = 2
+        self.snakedir = Direction.RIGHT
+        self.score = 0
+        self.maxlength = self.size * self.size
+        self.finished = False
+        for i in range(self.snakelength):
+            self.grid[i][0] = i + 1
 
     # takes in snake input and updates the grid
     def update(self, move):
@@ -95,9 +110,9 @@ class SnakeGame:
             choice = np.random.randint(len(viable))
             self.appleposX = viable[choice][0]
             self.appleposY = viable[choice][1]
-            if self.grid[self.appleposX][self.appleposY] > 0:
-                print("overlap")
-            print("X: " +str(self.appleposX) + "Y: " + str(self.appleposY))
+            # if self.grid[self.appleposX][self.appleposY] > 0:
+            #     print("overlap")
+            # print("X: " +str(self.appleposX) + "Y: " + str(self.appleposY))
         #we're done now
 
 
@@ -124,4 +139,11 @@ class SnakeGame:
                 largest = output[d]
                 max_direction = Direction(d + 1)
         return max_direction
+
+    # iterates through the whole game until it's completed and returns length
+    def getscore(self, nn):
+        while not self.finished:
+            self.update(self.predict(nn.predict(self.getstate().T)))
+        return self.snakelength
+
 
