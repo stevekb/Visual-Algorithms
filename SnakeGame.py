@@ -11,6 +11,7 @@ class SnakeGame:
     #initiate apple position var
     #initiate snake direction var
     def __init__(self, size):
+
         self.size = size
         self.grid = np.zeros((size, size))
         self.snakeposX = 2
@@ -19,6 +20,8 @@ class SnakeGame:
         self.appleposX = 2
         self.appleposY = 2
         self.snakedir = Direction.RIGHT
+        self.timer = 0
+        self.timesincelastapple = 0
         self.score = 0
         self.maxlength = size*size
         self.finished = False
@@ -29,6 +32,8 @@ class SnakeGame:
         self.grid = np.zeros((self.size, self.size))
         self.snakeposX = 2
         self.snakeposY = 0
+        self.timer = 0
+        self.timesincelastapple = 0
         self.snakelength = 3
         self.appleposX = 2
         self.appleposY = 2
@@ -45,6 +50,7 @@ class SnakeGame:
             print("finished")
             return
 
+        self.timer += 1
 
         #print("hello")#
         #check if next spot is out of bounds
@@ -89,6 +95,7 @@ class SnakeGame:
             flush = False
 
         if flush is True:
+            self.timesincelastapple += 1
             for i in range(self.grid.shape[0]):
                 for j in range(self.grid.shape[1]):
                     if self.grid[i][j] > 0:
@@ -110,13 +117,13 @@ class SnakeGame:
             choice = np.random.randint(len(viable))
             self.appleposX = viable[choice][0]
             self.appleposY = viable[choice][1]
+            self.timesincelastapple = 0
             # if self.grid[self.appleposX][self.appleposY] > 0:
             #     print("overlap")
             # print("X: " +str(self.appleposX) + "Y: " + str(self.appleposY))
         #we're done now
 
-
-
+            # takes in snake input and updates the grid
 
     def getstate(self):
         state = self.grid.ravel()
@@ -142,12 +149,8 @@ class SnakeGame:
 
     # iterates through the whole game until it's completed and returns length
     def getscore(self, nn):
-        n = 0
-        while not self.finished and n < 65:
-            n += 1
+        while not self.finished and self.timesincelastapple < self.size * self.size * 2:
             self.update(self.predict(nn.predict(self.getstate().T)))
-        if n == 65:
-            raise Exception("getscore ran too long and was stopped")
         return self.snakelength
 
 

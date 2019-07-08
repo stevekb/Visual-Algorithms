@@ -5,27 +5,33 @@ from SnakeGame import SnakeGame
 from VisualSnakeGame import VisualSnakeGame
 from SnakeGame import Direction
 import pygame
+import numpy as np
 import pygame.gfxdraw
 #this class is just a wrapper
 #where I can run different things
 
 # for our sample data set just use random numbers
 #and then sin
-
 #trainingX = np.array()
 
-z = (4,2,2,3)
-shapes = list(zip(z[1:], z[:-1]))
-w_shapes = [(a, b) for a, b in zip(z[1:], z[:-1])]
-print(shapes)
-print(w_shapes)
+# shape = [2,5,6]
+# bias = [np.zeros((s, 1)) for s in shape[1:]]
+# print(bias)
+# bias = [np.array([np.random.standard_normal(s)/s**.5]).T for s in shape[1:]]
+# print(bias)
+
+
+
+
 
 vg = VisualGUI()
 pygame.init()
 screen = pygame.display.set_mode((1200, 800))
 time = 0.0
 
-
+searching = True
+bestnnbias = []
+bestnnweights = []
 myNN = NeuralNet((70, 5, 5, 5, 4))
 # print(myNN.getweights())
 print(myNN.predict([0]*70))
@@ -55,30 +61,37 @@ while running:
 
 
     time += 0.1
-    entry+=1
+    #entry+=1
     pygame.display.update()
 
-    if bestscore < 10:
-        myVSG.snakegame.reset()
-        VNN.nn.randomize()
-        score = myVSG.snakegame.getscore(VNN.nn)
-        if score > bestscore:
-            bestscore = score
-            print("entry: " + str(entry) + " new best score: " + str(bestscore))
+    if bestscore < 10 and searching:
+        for i in range(10000):
+            entry += 1
+            myVSG.snakegame.reset()
+            VNN.nn.randomize()
+            score = myVSG.snakegame.getscore(VNN.nn)
+            if score > bestscore:
+                bestscore = score
+                bestnnweights = VNN.nn.getweights()
+                bestnnbias = VNN.nn.getbias()
+                print("entry: " + str(entry) + " new best score: " + str(bestscore))
         if entry%100 == 0:
             print("entry: " + str(entry) + " score: " + str(score) + " bestscore: " + str(bestscore))
+
+    if searching == False:
+        myVSG.snakegame.update(myVSG.snakegame.predict(VNN.nn.predict(myVSG.snakegame.getstate().T)))
+        if myVSG.snakegame.finished:
+            searching = True
 
     for event in pygame.event.get():
         if pygame.mouse.get_pressed()[0]:
             VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
         if pygame.key.get_pressed()[pygame.K_SPACE]:
+            searching = False
             myVSG.snakegame.reset()
-            VNN.nn.randomize()
-            score = myVSG.snakegame.getscore(VNN.nn)
-            if score > bestscore:
-                bestscore = score
-            print("score: " + str(score) + " bestscore: " + str(bestscore))
+            VNN.nn.weights = bestnnweights
+            VNN.nn.bias = bestnnbias
 
         if pygame.key.get_pressed()[pygame.K_LEFT]:
             print("Human: LEFT, AI: " + str(myVSG.snakegame.predict(myNN.predict(state.T))))

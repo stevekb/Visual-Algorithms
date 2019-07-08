@@ -8,7 +8,8 @@ class NeuralNet:
         self.shape = shape
         self.w_shapes = list(zip(shape[1:], shape[:-1]))
         self.weights = [np.random.standard_normal(s)/s[1]**.5 for s in self.w_shapes]
-        self.bias = [np.zeros((s, 1)) for s in shape[1:]]
+        self.bias = [np.array([np.random.standard_normal(s)/s**.5]).T for s in shape[1:]]
+        #self.bias = [np.zeros((s, 1)) for s in shape[1:]]
 
     def getweights(self):
         return self.weights
@@ -21,7 +22,7 @@ class NeuralNet:
 
     def randomize(self):
         self.weights = [np.random.standard_normal(s)/s[1]**.5 for s in self.w_shapes]
-        self.bias = [np.zeros((s, 1)) for s in self.shape[1:]]
+        self.bias = [np.array([np.random.standard_normal(s)/s**.5]).T for s in self.shape[1:]]
 
     def predict(self, a):
         if len(a) != self.shape[0]:
