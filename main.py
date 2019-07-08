@@ -45,6 +45,7 @@ VNN.setwidth(500)
 # basic loop
 running = True
 bestscore = 0
+entry = 0
 while running:
     screen.fill((0, 0, 0))
     VNN.draw()
@@ -54,8 +55,18 @@ while running:
 
 
     time += 0.1
-
+    entry+=1
     pygame.display.update()
+
+    if bestscore < 10:
+        myVSG.snakegame.reset()
+        VNN.nn.randomize()
+        score = myVSG.snakegame.getscore(VNN.nn)
+        if score > bestscore:
+            bestscore = score
+            print("entry: " + str(entry) + " new best score: " + str(bestscore))
+        if entry%100 == 0:
+            print("entry: " + str(entry) + " score: " + str(score) + " bestscore: " + str(bestscore))
 
     for event in pygame.event.get():
         if pygame.mouse.get_pressed()[0]:
@@ -84,4 +95,5 @@ while running:
 
         if event.type == pygame.QUIT:
             running = False
+            pygame.quit()
 

@@ -142,8 +142,12 @@ class SnakeGame:
 
     # iterates through the whole game until it's completed and returns length
     def getscore(self, nn):
-        while not self.finished:
+        n = 0
+        while not self.finished and n < 65:
+            n += 1
             self.update(self.predict(nn.predict(self.getstate().T)))
+        if n == 65:
+            raise Exception("getscore ran too long and was stopped")
         return self.snakelength
 
 
