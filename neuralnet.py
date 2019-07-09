@@ -11,6 +11,10 @@ class NeuralNet:
         self.bias = [np.array([np.random.standard_normal(s)/s**.5]).T for s in shape[1:]]
         #self.bias = [np.zeros((s, 1)) for s in shape[1:]]
 
+    def setvalues(self, weights, bias):
+        self.weights = weights
+        self.bias = bias
+
     def getweights(self):
         return self.weights
 
