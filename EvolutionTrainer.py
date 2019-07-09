@@ -24,6 +24,7 @@ class EvolutionTrainer:
         self.currgen = 1
         self.nns = np.array()
         self.nn = nn # nn object that will be used to process nns
+        #test
 
 
     # this will evaluate a generation
