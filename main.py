@@ -4,6 +4,7 @@ from neuralnet import NeuralNet
 from SnakeGame import SnakeGame
 from VisualSnakeGame import VisualSnakeGame
 from SnakeGame import Direction
+from EvolutionTrainer import EvolutionTrainer
 import pygame
 import numpy as np
 import pygame.gfxdraw
@@ -34,7 +35,7 @@ bestnnbias = []
 bestnnweights = []
 myNN = NeuralNet((70, 5, 5, 5, 4))
 # print(myNN.getweights())
-print(myNN.predict([0]*70))
+# print(myNN.predict([0]*70))
 
 mySG = SnakeGame(8)
 myVSG = VisualSnakeGame(screen, mySG)
@@ -50,8 +51,13 @@ VNN.setposition(50, 50)
 VNN.setwidth(500)
 # basic loop
 running = True
-bestscore = 0
+bestscore = 20
 entry = 0
+
+#evolution trainer
+et = EvolutionTrainer(myNN)
+
+
 while running:
     screen.fill((0, 0, 0))
     VNN.draw()
@@ -85,7 +91,8 @@ while running:
 
     for event in pygame.event.get():
         if pygame.mouse.get_pressed()[0]:
-            VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            # VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            et.evalGeneration()
 
         if pygame.key.get_pressed()[pygame.K_SPACE]:
             searching = False
@@ -108,5 +115,4 @@ while running:
 
         if event.type == pygame.QUIT:
             running = False
-            pygame.quit()
 

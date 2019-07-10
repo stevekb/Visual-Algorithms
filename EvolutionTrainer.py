@@ -19,12 +19,14 @@ class EvolutionTrainer:
         self.mutatations = 2
         # note when mutations are done all of them are tested again before shaving
         # best nn has weights biases and avg score when tested
-        self.bestnn = (0,0,0)
+        self.bestnn = [] # will fill with w and b and score of each generation's best
 
         self.currgen = 1
-        self.nns = np.array()
+        self.nns = []
         self.nn = nn # nn object that will be used to process nns
         #test
+        self.shape = nn.getshape()
+        self.w_shapes = list(zip(self.shape[1:], self.shape[:-1]))
 
 
     # this will evaluate a generation
@@ -38,8 +40,53 @@ class EvolutionTrainer:
         # make sure to save best performer per gen
         # also remember even if an ai did well last gen it needs to perform just as well
         # in the next gen or it dies so retesting them is important
+        rank = []
         if self.currgen == 1:
             for i in range(self.ai_per_generation):
-                self.nn.randomize()
-                self.nns.append((self.nn.getweights,self.nn.getbias))
+                self.nns.append((self.create()))
+
+        else: # otherwise we wanna evolve
+            newnns = []
+            for i in range(self.ai_per_generation):
+                if(i < self.ai_per_generation * self.cutoff):
+                    if(i < self.ai_per_generation * self.top_immunity):
+                        newnns.append(self.nns[i])
+                        for j in range(self.mutatations - 1):
+                            newnns.append(self.mutate(self.nns[i],0.0))
+                    else:
+                        for j in range(self.mutatations):
+                            newnns.append(self.mutate(self.nns[i],0.0))
+                else: # rest after cutoff add in as random
+                    newnns.append(self.create())
+
+            self.nns = newnns
+
+        #  after anything is made we test
+        #  then reorder based on results and then
+        #  then cutoff to ai_per_gen
+
+
+        print(len(self.nns))
+        self.currgen += 1
+
+
+    #takes in weights and bias pair and mutates a bit
+    def mutate(self,wb, mutate_amount):
+        w, b = wb
+        for i in range(len(w)):
+            for j in range(len(w[i])):
+                for k in range(len(w[i][j])):
+                    w[i][j][k] += + np.random.standard_normal() * mutate_amount
+
+        for i in range(len(b)):
+            for j in range(len(b[i])):
+                b[i][j] + np.random.standard_normal()* mutate_amount
+        return w, b
+
+    def create(self):
+        w = [np.random.standard_normal(s) / s[1] ** .5 for s in self.w_shapes]
+        b = [np.array([np.random.standard_normal(s) / s ** .5]).T for s in self.shape[1:]]
+        return w, b
+
+
 
