@@ -55,7 +55,7 @@ bestscore = 20
 entry = 0
 
 #evolution trainer
-et = EvolutionTrainer(myNN)
+et = EvolutionTrainer(myNN, mySG)
 
 
 while running:

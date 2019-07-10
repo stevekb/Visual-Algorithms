@@ -1,14 +1,16 @@
 import numpy as np
-
+from SnakeGame import SnakeGame
+from neuralnet import NeuralNet
 
 class EvolutionTrainer:
 
 
-    def __init__(self, nn):
+#tester is how to score nn's
+    def __init__(self, nn, tester):
         # how many times to test ai in case it was just unlucky
-        self.tests_per_ai = 3
+        self.tests_per_ai = 2
         # number of ai per generation
-        self.ai_per_generation = 1000
+        self.ai_per_generation = 10000
         # percent of top that are immune and will mutate but keep a copy of itself
         self.top_immunity = .01 #  best 1%
         # all of the entries are mutated to this amount except the bottom half
@@ -16,14 +18,15 @@ class EvolutionTrainer:
         # 500 are replaced
         # based on mutations this will result in a larger amount but they will be ordered
         # and then cut off afterwards
-        self.mutatations = 2
+        self.mutatations = 1
         # note when mutations are done all of them are tested again before shaving
         # best nn has weights biases and avg score when tested
         self.bestnn = [] # will fill with w and b and score of each generation's best
-
+        self.bestscore = 0
         self.currgen = 1
         self.nns = []
         self.nn = nn # nn object that will be used to process nns
+        self.tester = tester # this is the class object that will test the nn
         #test
         self.shape = nn.getshape()
         self.w_shapes = list(zip(self.shape[1:], self.shape[:-1]))
@@ -64,9 +67,26 @@ class EvolutionTrainer:
         #  after anything is made we test
         #  then reorder based on results and then
         #  then cutoff to ai_per_gen
+        scores = []
+        for n in range(len(self.nns)):
+            avgscore = 0
+            #set our nn to have the weights and biases we want
+            self.nn.setvalues(self.nns[n][0],self.nns[n][1])
+            for i in range(self.tests_per_ai):
+                avgscore += self.tester.getscore(self.nn)
+                # print(avgscore)
+            avgscore /= self.tests_per_ai
+            scores.append(avgscore)
 
+        #now we have all the scores so now we want to order the results
+
+        self.nns = [x for _, x in sorted(zip(scores, self.nns), key=lambda pair: pair[0])]
+
+        #finally we only add some
+        self.nns = self.nns[:self.ai_per_generation]
 
         print(len(self.nns))
+        print(max(scores))
         self.currgen += 1
 
 

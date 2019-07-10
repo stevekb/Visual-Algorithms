@@ -149,6 +149,7 @@ class SnakeGame:
 
     # iterates through the whole game until it's completed and returns length
     def getscore(self, nn):
+        self.reset()
         while not self.finished and self.timesincelastapple < self.size * self.size * 2:
             self.update(self.predict(nn.predict(self.getstate().T)))
         return self.snakelength
