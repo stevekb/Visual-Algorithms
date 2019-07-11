@@ -8,17 +8,17 @@ class EvolutionTrainer:
 #tester is how to score nn's
     def __init__(self, nn, tester):
         # how many times to test ai in case it was just unlucky
-        self.tests_per_ai = 2
+        self.tests_per_ai = 5
         # number of ai per generation
-        self.ai_per_generation = 10000
+        self.ai_per_generation = 100
         # percent of top that are immune and will mutate but keep a copy of itself
-        self.top_immunity = .01 #  best 1%
+        self.top_immunity = .01 #  best 10%
         # all of the entries are mutated to this amount except the bottom half
-        self.cutoff = 0.5 # so generation has 1000 then top 500 are mutated and bottom
+        self.cutoff = 0.1 # so generation has 1000 then top 500 are mutated and bottom
         # 500 are replaced
         # based on mutations this will result in a larger amount but they will be ordered
         # and then cut off afterwards
-        self.mutatations = 1
+        self.mutatations = 5
         # note when mutations are done all of them are tested again before shaving
         # best nn has weights biases and avg score when tested
         self.bestnn = [] # will fill with w and b and score of each generation's best
@@ -55,10 +55,10 @@ class EvolutionTrainer:
                     if(i < self.ai_per_generation * self.top_immunity):
                         newnns.append(self.nns[i])
                         for j in range(self.mutatations - 1):
-                            newnns.append(self.mutate(self.nns[i],0.0))
+                            newnns.append(self.mutate(self.nns[i],0.5))
                     else:
                         for j in range(self.mutatations):
-                            newnns.append(self.mutate(self.nns[i],0.0))
+                            newnns.append(self.mutate(self.nns[i],0.5))
                 else: # rest after cutoff add in as random
                     newnns.append(self.create())
 
@@ -80,13 +80,13 @@ class EvolutionTrainer:
 
         #now we have all the scores so now we want to order the results
 
-        self.nns = [x for _, x in sorted(zip(scores, self.nns), key=lambda pair: pair[0])]
+        self.nns = [x for _, x in sorted(zip(scores, self.nns), reverse=True, key=lambda pair: pair[0])]
 
         #finally we only add some
         self.nns = self.nns[:self.ai_per_generation]
 
-        print(len(self.nns))
-        print(max(scores))
+        # print(len(self.nns))
+        print("gen: " +str(self.currgen) + " best: " + str(max(scores)))
         self.currgen += 1
 
 

@@ -22,7 +22,7 @@ import pygame.gfxdraw
 # print(bias)
 
 
-
+gamesize = 4
 
 
 vg = VisualGUI()
@@ -33,11 +33,11 @@ time = 0.0
 searching = True
 bestnnbias = []
 bestnnweights = []
-myNN = NeuralNet((70, 5, 5, 5, 4))
+myNN = NeuralNet((gamesize*gamesize+6, 10, 10, 10, 4))
 # print(myNN.getweights())
 # print(myNN.predict([0]*70))
 
-mySG = SnakeGame(8)
+mySG = SnakeGame(gamesize)
 myVSG = VisualSnakeGame(screen, mySG)
 myVSG.setheight(500)
 myVSG.setposition(650, 150)
@@ -66,6 +66,10 @@ while running:
     #myNN.predict(state.T)
 
 
+    if et.currgen < 500:
+        et.evalGeneration()
+
+
     time += 0.1
     #entry+=1
     pygame.display.update()
@@ -91,8 +95,9 @@ while running:
 
     for event in pygame.event.get():
         if pygame.mouse.get_pressed()[0]:
+            k = 0
             # VNN.clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-            et.evalGeneration()
+            # et.evalGeneration()
 
         if pygame.key.get_pressed()[pygame.K_SPACE]:
             searching = False

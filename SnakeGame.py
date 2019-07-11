@@ -13,20 +13,7 @@ class SnakeGame:
     def __init__(self, size):
 
         self.size = size
-        self.grid = np.zeros((size, size))
-        self.snakeposX = 2
-        self.snakeposY = 0
-        self.snakelength = 3
-        self.appleposX = 2
-        self.appleposY = 2
-        self.snakedir = Direction.RIGHT
-        self.timer = 0
-        self.timesincelastapple = 0
-        self.score = 0
-        self.maxlength = size*size
-        self.finished = False
-        for i in range(self.snakelength):
-            self.grid[i][0] = i+1
+        self.reset()
 
     def reset(self):
         self.grid = np.zeros((self.size, self.size))
@@ -43,6 +30,15 @@ class SnakeGame:
         self.finished = False
         for i in range(self.snakelength):
             self.grid[i][0] = i + 1
+        # set apple in viable spot
+        viable = []
+        for i in range(self.grid.shape[0]):
+            for j in range(self.grid.shape[1]):
+                if self.grid[i][j] == 0:
+                    viable.append((i, j))
+        choice = np.random.randint(len(viable))
+        self.appleposX = viable[choice][0]
+        self.appleposY = viable[choice][1]
 
     # takes in snake input and updates the grid
     def update(self, move):
